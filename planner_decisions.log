@@ -1,0 +1,253 @@
+[seg=59fd6] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=79525] decision=NORMAL trace='Stop: budget reached' score=0.3000
+[seg=d3d41] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=c817c] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=59fd6] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=79525] decision=NORMAL trace='Stop: budget reached' score=0.3000
+[seg=d3d41] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=c817c] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=59fd6] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=79525] decision=NORMAL trace='Stop: budget reached' score=0.3000
+[seg=d3d41] decision=NORMAL trace='Stop: budget reached' score=0.0500
+[seg=c817c] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=NORMAL trace='Stop: budget reached' score=0.0500
+[seg=59fd6] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=79525] decision=NORMAL trace='Stop: budget reached' score=0.3000
+[seg=d3d41] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=c817c] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=59fd6] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=79525] decision=NORMAL trace='Stop: budget reached' score=0.3000
+[seg=d3d41] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=c817c] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=59fd6] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=79525] decision=NORMAL trace='Stop: budget reached' score=0.3000
+[seg=d3d41] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=c817c] decision=NORMAL trace='LLM: normal' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=REFINE trace='Refine & retry' score=0.7500
+[seg=59fd6] decision=NORMAL trace='LLM unavailable' score=0.6000
+[seg=79525] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=d3d41] decision=NORMAL trace='LLM unavailable' score=0.7500
+[seg=c817c] decision=NORMAL trace='LLM unavailable' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=NORMAL trace='LLM unavailable' score=0.7500
+[seg=59fd6] decision=NORMAL trace='LLM unavailable' score=0.6000
+[seg=79525] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=d3d41] decision=NORMAL trace='LLM unavailable' score=0.7500
+[seg=c817c] decision=NORMAL trace='LLM unavailable' score=0.6000
+[seg=2c3db] decision=NORMAL trace='LLM: normal' score=0.3000
+[seg=e65fb] decision=NORMAL trace='LLM unavailable' score=0.7500
+[seg=ea3cc] decision=NORMAL trace='LLM unavailable' score=0.5599
+[seg=7a47b] decision=NORMAL trace='LLM: normal' score=0.4087
+[seg=ddda4] decision=NORMAL trace='LLM: normal' score=0.4365
+[seg=d3d60] decision=NORMAL trace='LLM unavailable' score=0.4800
+[seg=d8149] decision=NORMAL trace='LLM unavailable' score=0.4621
+[seg=5d88b] decision=NORMAL trace='LLM unavailable' score=0.6271
+[seg=ea3cc] decision=NORMAL trace='LLM unavailable' score=0.5603
+[seg=7a47b] decision=NORMAL trace='LLM: normal' score=0.4089
+[seg=ddda4] decision=NORMAL trace='LLM: normal' score=0.4379
+[seg=d3d60] decision=NORMAL trace='LLM unavailable' score=0.4794
+[seg=d8149] decision=NORMAL trace='LLM unavailable' score=0.4619
+[seg=5d88b] decision=NORMAL trace='LLM unavailable' score=0.6276
+[seg=ea3cc] decision=NORMAL trace='LLM unavailable' score=0.5600
+[seg=7a47b] decision=NORMAL trace='LLM: normal' score=0.4086
+[seg=ddda4] decision=NORMAL trace='LLM: normal' score=0.4389
+[seg=d3d60] decision=NORMAL trace='LLM unavailable' score=0.4803
+[seg=d8149] decision=NORMAL trace='LLM unavailable' score=0.4626
+[seg=5d88b] decision=NORMAL trace='LLM unavailable' score=0.6269
+[seg=30690] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkS35ZRdZF7LvrXoUXg'}' score=0.7699
+[seg=c3ded] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkSEygSXuggtY9vq2nD'}' score=0.5678
+[seg=11bd0] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkSPa7BPgf7SumRuPtP'}' score=0.6084
+[seg=619e4] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkSXxtBeZEGyG8FCYJR'}' score=0.7468
+[seg=9c594] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkSh1rC3GrxCVadyebq'}' score=0.7842
+[seg=b62cc] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkSuA6LS8QDky66Nvfh'}' score=0.6458
+[seg=30690] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkbryNtacnRArU8KK7U'}' score=0.7690
+[seg=c3ded] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkc2oUGRj8VVfkFZ3GE'}' score=0.5680
+[seg=11bd0] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkcArfLrfEmvoeCrojr'}' score=0.6082
+[seg=619e4] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkcKBTqowdeZonS3pyz'}' score=0.7464
+[seg=9c594] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkcU4G1BZ8hkb6fGwA5'}' score=0.7843
+[seg=b62cc] decision=ERROR trace='anthropic.NotFoundError: Error code: 404 - {'type': 'error', 'error': {'type': 'not_found_error', 'message': 'model: claude-3-5-sonnet-latest'}, 'request_id': 'req_011CUfkcc4ijwuWvyrnn4Ysq'}' score=0.6449
+[seg=30690] decision=NORMAL trace='LLM: normal' score=0.7701
+[seg=c3ded] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=11bd0] decision=NORMAL trace='LLM: normal' score=0.6082
+[seg=619e4] decision=NORMAL trace='LLM: normal' score=0.7463
+[seg=9c594] decision=NORMAL trace='LLM: normal' score=0.7841
+[seg=b62cc] decision=NORMAL trace='LLM: normal' score=0.6449
+[seg=30690] decision=NORMAL trace='LLM: normal' score=0.7699
+[seg=c3ded] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=11bd0] decision=NORMAL trace='LLM: normal' score=0.6082
+[seg=619e4] decision=NORMAL trace='LLM: normal' score=0.7465
+[seg=9c594] decision=NORMAL trace='LLM: normal' score=0.7844
+[seg=b62cc] decision=NORMAL trace='LLM: normal' score=0.6454
+[seg=30690] decision=NORMAL trace='LLM: normal' score=0.7700
+[seg=c3ded] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=11bd0] decision=NORMAL trace='LLM: normal' score=0.6083
+[seg=619e4] decision=NORMAL trace='LLM: normal' score=0.7464
+[seg=9c594] decision=NORMAL trace='LLM: normal' score=0.7843
+[seg=b62cc] decision=NORMAL trace='LLM: normal' score=0.6445
+[seg=30690] decision=NORMAL trace='LLM: normal' score=0.7703
+[seg=c3ded] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=11bd0] decision=NORMAL trace='LLM: normal' score=0.6082
+[seg=619e4] decision=NORMAL trace='LLM: normal' score=0.7463
+[seg=9c594] decision=NORMAL trace='LLM: normal' score=0.7841
+[seg=b62cc] decision=NORMAL trace='LLM: normal' score=0.6458
+[seg=30690] decision=NORMAL trace='LLM: normal' score=0.7701
+[seg=c3ded] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=11bd0] decision=NORMAL trace='LLM: normal' score=0.6082
+[seg=619e4] decision=NORMAL trace='LLM: normal' score=0.7464
+[seg=9c594] decision=NORMAL trace='LLM: normal' score=0.7841
+[seg=b62cc] decision=NORMAL trace='LLM: normal' score=0.6461
+[seg=7b44b] decision=NORMAL trace='LLM: normal' score=0.6021
+[seg=32588] decision=NORMAL trace='LLM: normal' score=0.6657
+[seg=f62a9] decision=REFINE trace='Lowered tau' score=0.6644
+[seg=0f369] decision=REFINE trace='Lowered tau' score=0.6438
+[seg=0885a] decision=NORMAL trace='LLM: normal' score=0.6834
+[seg=bf587] decision=REFINE trace='Lowered tau' score=0.6436
+[seg=e28cb] decision=REFINE trace='Lowered tau' score=0.6772
+[seg=0088f] decision=NORMAL trace='Stop: budget reached' score=0.5720
+[seg=9f9c1] decision=REFINE trace='Lowered tau' score=0.6315
+[seg=7b44b] decision=NORMAL trace='LLM: normal' score=0.6023
+[seg=32588] decision=NORMAL trace='LLM: normal' score=0.6660
+[seg=f62a9] decision=REFINE trace='Lowered tau' score=0.6642
+[seg=0f369] decision=REFINE trace='Lowered tau' score=0.6524
+[seg=0885a] decision=NORMAL trace='LLM: normal' score=0.6836
+[seg=bf587] decision=REFINE trace='Lowered tau' score=0.6434
+[seg=e28cb] decision=REFINE trace='Lowered tau' score=0.6774
+[seg=0088f] decision=NORMAL trace='Stop: budget reached' score=0.5721
+[seg=9f9c1] decision=NORMAL trace='Stop: budget reached' score=0.6068
+[seg=7b44b] decision=NORMAL trace='LLM: normal' score=0.5712
+[seg=32588] decision=NORMAL trace='LLM: normal' score=0.6134
+[seg=f62a9] decision=NORMAL trace='LLM: normal' score=0.6584
+[seg=0f369] decision=REFINE trace='Refine & retry' score=0.7094
+[seg=0885a] decision=NORMAL trace='LLM: normal' score=0.6663
+[seg=bf587] decision=NORMAL trace='LLM: normal' score=0.5986
+[seg=e28cb] decision=NORMAL trace='Stop: budget reached' score=0.5642
+[seg=0088f] decision=NORMAL trace='Stop: budget reached' score=0.5830
+[seg=9f9c1] decision=REFINE trace='Lowered tau' score=0.6405
+[seg=fc20a] decision=NORMAL trace='LLM: normal' score=0.5582
+[seg=9c9d9] decision=NORMAL trace='Stop: budget reached' score=0.5871
+[seg=f928d] decision=NORMAL trace='LLM: normal' score=0.6515
+[seg=7bfcf] decision=NORMAL trace='Stop: budget reached' score=0.5714
+[seg=99b8e] decision=NORMAL trace='LLM: normal' score=0.6790
+[seg=1e7b2] decision=REFINE trace='Lowered tau' score=0.6784
+[seg=19aba] decision=NORMAL trace='LLM: normal' score=0.6555
+[seg=6f237] decision=NORMAL trace='Stop: budget reached' score=0.5730
+[seg=016f6] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=e36a7] decision=REFINE trace='Lowered tau' score=0.6395
+[seg=fc20a] decision=NORMAL trace='LLM: normal' score=0.5564
+[seg=9c9d9] decision=NORMAL trace='Stop: budget reached' score=0.5869
+[seg=f928d] decision=NORMAL trace='LLM: normal' score=0.6512
+[seg=7bfcf] decision=NORMAL trace='Stop: budget reached' score=0.5714
+[seg=99b8e] decision=NORMAL trace='LLM: normal' score=0.6785
+[seg=1e7b2] decision=REFINE trace='Refine & retry' score=0.6816
+[seg=19aba] decision=NORMAL trace='LLM: normal' score=0.6552
+[seg=6f237] decision=NORMAL trace='Stop: budget reached' score=0.5607
+[seg=016f6] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=e36a7] decision=REFINE trace='Lowered tau' score=0.6391
+[seg=de15e] decision=NORMAL trace='Stop: budget reached' score=0.5596
+[seg=1dbab] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=5e20d] decision=NORMAL trace='Stop: budget reached' score=0.5985
+[seg=a9f07] decision=NORMAL trace='Stop: budget reached' score=0.6104
+[seg=a315e] decision=NORMAL trace='Stop: budget reached' score=0.5704
+[seg=2ad4e] decision=REFINE trace='Lowered tau' score=0.6342
+[seg=8a1e5] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=8e943] decision=REFINE trace='Lowered tau' score=0.6370
+[seg=de15e] decision=NORMAL trace='Stop: budget reached' score=0.5584
+[seg=1dbab] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=5e20d] decision=NORMAL trace='Stop: budget reached' score=0.5966
+[seg=a9f07] decision=NORMAL trace='Stop: budget reached' score=0.6108
+[seg=a315e] decision=NORMAL trace='Stop: budget reached' score=0.5700
+[seg=2ad4e] decision=REFINE trace='Lowered tau' score=0.6334
+[seg=8a1e5] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=8e943] decision=REFINE trace='Lowered tau' score=0.6370
+[seg=de15e] decision=NORMAL trace='Stop: budget reached' score=0.5596
+[seg=1dbab] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=5e20d] decision=NORMAL trace='Stop: budget reached' score=0.5983
+[seg=a9f07] decision=NORMAL trace='Stop: budget reached' score=0.6109
+[seg=a315e] decision=NORMAL trace='Stop: budget reached' score=0.5712
+[seg=2ad4e] decision=REFINE trace='Lowered tau' score=0.6343
+[seg=8a1e5] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=8e943] decision=REFINE trace='Lowered tau' score=0.6370
+[seg=f67aa] decision=NORMAL trace='Retriever error' score=None
+[seg=d474b] decision=NORMAL trace='Retriever error' score=None
+[seg=33d83] decision=NORMAL trace='Retriever error' score=None
+[seg=7903b] decision=NORMAL trace='Retriever error' score=None
+[seg=57dc7] decision=NORMAL trace='Retriever error' score=None
+[seg=1e7b2] decision=NORMAL trace='Retriever error' score=None
+[seg=362b8] decision=NORMAL trace='Retriever error' score=None
+[seg=5cc15] decision=NORMAL trace='Retriever error' score=None
+[seg=016f6] decision=NORMAL trace='Retriever error' score=None
+[seg=2aa89] decision=NORMAL trace='Retriever error' score=None
+[seg=f67aa] decision=NORMAL trace='LLM: normal' score=0.5871
+[seg=d474b] decision=NORMAL trace='LLM: normal' score=0.6144
+[seg=33d83] decision=NORMAL trace='LLM: normal' score=0.5978
+[seg=7903b] decision=REFINE trace='Lowered tau' score=0.6310
+[seg=57dc7] decision=NORMAL trace='LLM: normal' score=0.6516
+[seg=1e7b2] decision=REFINE trace='Lowered tau' score=0.6577
+[seg=362b8] decision=NORMAL trace='LLM: normal' score=0.6636
+[seg=5cc15] decision=NORMAL trace='Stop: budget reached' score=0.5576
+[seg=016f6] decision=NORMAL trace='Stop: budget reached' score=0.6185
+[seg=2aa89] decision=NORMAL trace='LLM: normal' score=0.5683
+[seg=f67aa] decision=NORMAL trace='LLM: normal' score=0.5878
+[seg=d474b] decision=NORMAL trace='LLM: normal' score=0.6138
+[seg=33d83] decision=NORMAL trace='Stop: budget reached' score=0.5979
+[seg=7903b] decision=REFINE trace='Lowered tau' score=0.6316
+[seg=57dc7] decision=NORMAL trace='LLM: normal' score=0.6513
+[seg=1e7b2] decision=REFINE trace='Lowered tau' score=0.6573
+[seg=362b8] decision=NORMAL trace='LLM: normal' score=0.6638
+[seg=5cc15] decision=NORMAL trace='Stop: budget reached' score=0.5570
+[seg=016f6] decision=NORMAL trace='Stop: budget reached' score=0.6187
+[seg=2aa89] decision=NORMAL trace='LLM: normal' score=0.5693
+[seg=f67aa] decision=NORMAL trace='LLM: normal' score=0.5865
+[seg=d474b] decision=NORMAL trace='LLM: normal' score=0.6144
+[seg=33d83] decision=NORMAL trace='Stop: budget reached' score=0.5983
+[seg=7903b] decision=REFINE trace='Lowered tau' score=0.6309
+[seg=57dc7] decision=NORMAL trace='LLM: normal' score=0.6518
+[seg=1e7b2] decision=REFINE trace='Lowered tau' score=0.6571
+[seg=362b8] decision=NORMAL trace='LLM: normal' score=0.6632
+[seg=5cc15] decision=NORMAL trace='Stop: budget reached' score=0.5572
+[seg=016f6] decision=NORMAL trace='Stop: budget reached' score=0.6180
+[seg=2aa89] decision=NORMAL trace='LLM: normal' score=0.5693
+[seg=bb099] decision=NORMAL trace='LLM: normal' score=0.5755
+[seg=5d5e1] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=444a9] decision=NORMAL trace='LLM: normal' score=0.6935
+[seg=b2052] decision=NORMAL trace='LLM: normal' score=0.6758
+[seg=09af3] decision=NORMAL trace='LLM: normal' score=0.7995
+[seg=a1cfd] decision=NORMAL trace='LLM: normal' score=0.6875
+[seg=8a3d2] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=8e3af] decision=NORMAL trace='LLM: normal' score=0.7687
+[seg=2f296] decision=NORMAL trace='Normal search' score=0.8474
+[seg=3a446] decision=NORMAL trace='LLM: normal' score=0.7723
+[seg=0670d] decision=NORMAL trace='Stop: budget reached' score=0.0000
+[seg=79222] decision=NORMAL trace='LLM: normal' score=0.8105
+[seg=f4042] decision=NORMAL trace='Stop: budget reached' score=0.6267
+[seg=8b544] decision=NORMAL trace='LLM: normal' score=0.7664
+[seg=24737] decision=NORMAL trace='LLM: normal' score=0.7504
+[seg=bfe0e] decision=NORMAL trace='LLM: normal' score=0.7522
+[seg=e6c0f] decision=NORMAL trace='LLM: normal' score=0.7248
+[seg=bb099] decision=NORMAL trace='LLM: normal' score=0.7416
+[seg=5d5e1] decision=NORMAL trace='LLM: normal' score=0.6975
+[seg=444a9] decision=NORMAL trace='Normal search' score=0.8479
+[seg=b2052] decision=NORMAL trace='LLM: normal' score=0.7398
+[seg=09af3] decision=NORMAL trace='Normal search' score=0.8374
+[seg=a1cfd] decision=NORMAL trace='LLM: normal' score=0.7210
+[seg=8a3d2] decision=NORMAL trace='LLM: normal' score=0.5676
+[seg=8e3af] decision=NORMAL trace='LLM: normal' score=0.7933
+[seg=2f296] decision=NORMAL trace='Normal search' score=0.8474
+[seg=3a446] decision=NORMAL trace='Normal search' score=0.8376
+[seg=0670d] decision=NORMAL trace='LLM: normal' score=0.6210
+[seg=79222] decision=NORMAL trace='Normal search' score=0.8477
+[seg=f4042] decision=NORMAL trace='Stop: budget reached' score=0.5951
+[seg=8b544] decision=NORMAL trace='LLM: normal' score=0.8006
+[seg=24737] decision=NORMAL trace='LLM: normal' score=0.7685
+[seg=bfe0e] decision=NORMAL trace='LLM: normal' score=0.7849
+[seg=e6c0f] decision=NORMAL trace='LLM: normal' score=0.7746
