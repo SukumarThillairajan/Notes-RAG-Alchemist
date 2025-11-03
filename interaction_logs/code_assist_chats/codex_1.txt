@@ -1,0 +1,589 @@
+pdf_utils.py
+import io
+from typing import List, Union
+
+import pytesseract
+from pdf2image import convert_from_path
+import fitz # PyMuPDF for direct text extraction
+
+def extract_text_from_pdf(pdf_file: Union[str, io.BytesIO], use_ocr: bool = False) -> List[str]:
+"""
+Extracts text from a PDF file. If use_ocr is True or no text is extractable,
+each page is converted to an image and OCR is applied using pytesseract.
+
+Parameters:
+    pdf_file: Path to a PDF or a BytesIO object of the PDF.
+    use_ocr: Force OCR extraction (for scanned PDFs). If False, will attempt 
+             direct text extraction first and fallback to OCR if needed.
+Returns:
+    A list of strings, where each string is the text content of a page.
+"""
+# Implementation steps:
+# 1. If not use_ocr, try to extract text using PyMuPDF.
+# 2. If text is found on pages, use that. If a page has no text or if use_ocr is True, 
+#    convert that page to image and use pytesseract to get text.
+# 3. Return list of page texts.
+pass
+
+Implemented extract_text_from_pdf so it now uses PyMuPDF for direct text, falls back to page-level OCR when needed, and supports both file paths and in-memory PDFs (utils/pdf_utils.py (line 1)). No automated tests run—consider exercising the helper with a sample searchable and a scanned PDF to confirm both paths behave as expected.
+
+pdf_utils.py (append below extract_text_from_pdf)
+from typing import List, Iterable
+
+def split_text(
+text: str,
+max_length: int = 1000,
+overlap: int = 120,
+hard_max: bool = True,
+min_chunk_len: int = 200,
+) -> List[str]:
+"""
+Split a long text into smaller, slightly overlapping chunks suitable for embeddings.
+
+Goals:
+  - Prefer splitting on natural boundaries (blank lines, paragraph ends, sentence ends).
+  - Preserve semantic coherence of derivations/equations where possible.
+  - Add a small character overlap between consecutive chunks to avoid cutting formulas mid-derivation.
+
+Parameters:
+  text         : The full input text (may include line breaks, equations).
+  max_length   : Maximum characters per chunk (post-trim, excluding overlap).
+  overlap      : Characters of backward overlap to prepend to the next chunk.
+  hard_max     : If True, never exceed max_length; if False, allow slight overflow to honor boundary.
+  min_chunk_len: Minimum characters for a chunk; merge tiny trailing segments into previous when possible.
+
+Returns:
+  List[str]    : List of chunk strings in original order. Chunks are trimmed of leading/trailing whitespace.
+
+Notes:
+  - Boundary hierarchy (strongest first): double-newline (paragraph) > single newline > sentence end ('. ', '? ', '! ') > spaces.
+  - Handle LaTeX/math blocks: keep inline '$...$' and block '$$...$$' / '\\[' ... '\\]' intact within a single chunk when feasible.
+  - Normalize excessive whitespace but DO NOT alter code/math content.
+  - Overlap is applied on character count from the *end* of the previous chunk (after trimming).
+
+Implementation steps:
+  1) Fast-path: if len(text) <= max_length, return [text.strip()].
+  2) Pre-normalize: collapse runs of 3+ newlines to 2; strip trailing spaces per line.
+  3) Produce candidate segments by first splitting on blank lines (\\n\\n+).
+  4) Greedy packer:
+     - Accumulate paragraphs into a current buffer until adding the next would exceed max_length.
+     - If a single paragraph is > max_length, recursively subdivide it using weaker separators:
+         (a) single newline, then
+         (b) sentence boundaries (regex on [.!?]+\\s), then
+         (c) whitespace windowed slicing as last resort.
+     - If hard_max is False, allow slight overflow (<= 10%) to finish a boundary.
+  5) After emitting a chunk, compute suffix overlap (last `overlap` chars of the emitted chunk) and prefix it to the next buffer start (taking care not to double spaces/newlines).
+  6) Enforce min_chunk_len by merging a too-small tail with the previous chunk when possible.
+  7) Return trimmed chunks; drop empty ones.
+
+Edge cases:
+  - Extremely long unbroken tokens (e.g., base64 blobs): fall back to fixed-width slicing to avoid infinite loops.
+  - Math blocks spanning paragraphs: avoid splitting inside '$$...$$' or '\\[ ... \\]' if detectably paired.
+  - Non-ASCII: keep Unicode intact.
+
+Tests (examples):
+  - Short text -> single chunk.
+  - Two long paragraphs -> two chunks with ~overlap characters.
+  - Paragraph with equations '$$ a^2 + b^2 = c^2 $$' remains in one chunk.
+  - Long line without spaces -> sliced safely with overlap.
+
+"""
+# TODO: Implement per steps above.
+# Suggested helpers (private):
+#   _normalize(text: str) -> str
+#   _split_paragraphs(text: str) -> List[str]
+#   _subdivide(paragraph: str, max_len: int, hard_max: bool) -> List[str]
+#   _apply_overlap(prev: str, next_chunk: str, overlap: int) -> str
+#   _contains_unclosed_math(block: str) -> bool
+#
+# Pseudocode:
+#   if len(text) <= max_length: return [text.strip()]
+#   text = _normalize(text)
+#   paras = _split_paragraphs(text)
+#   chunks = []
+#   buf = ""
+#   for p in paras:
+#       if not buf: buf = p
+#       elif len(buf) + 1 + len(p) <= max_length:
+#           buf += "\n" + p
+#       else:
+#           if len(p) > max_length:
+#               sub = _subdivide(p, max_length, hard_max)
+#               # emit buf, then pack sub parts
+#               if buf:
+#                   chunks.append(buf.strip())
+#               for s in sub[:-1]:
+#                   chunks.append(s.strip())
+#               buf = sub[-1]
+#           else:
+#               chunks.append(buf.strip())
+#               buf = p
+#   if buf: chunks.append(buf.strip())
+#
+#   # add overlaps
+#   if overlap > 0 and len(chunks) > 1:
+#       with_ov = []
+#       for i, c in enumerate(chunks):
+#           if i == 0:
+#               with_ov.append(c)
+#           else:
+#               prev = with_ov[-1]
+#               tail = prev[-overlap:]
+#               merged = (tail + "\n" + c).strip()
+#               # if merged too long and hard_max, trim from the front of c keeping overlap
+#               if hard_max and len(merged) > max_length:
+#                   keep = max_length
+#                   merged = merged[-keep:]
+#               with_ov.append(merged)
+#       chunks = with_ov
+#
+#   # enforce min_chunk_len by merging tail if needed
+#   if len(chunks) >= 2 and len(chunks[-1]) < min_chunk_len:
+#       chunks[-2] = (chunks[-2] + "\n" + chunks[-1]).strip()
+#       chunks.pop()
+#
+#   return [c for c in chunks if c]
+
+pass
+Implement the function fully now, following the steps and helpers outlined above.
+
+
+Expanded split_text in utils/pdf_utils.py (line 69) to normalize input, pack paragraphs greedily, subdivide oversize segments via newline/sentence/whitespace boundaries, and apply configurable overlap while honoring hard/soft limits. Added helpers _normalize (utils/pdf_utils.py (line 176)), _subdivide (utils/pdf_utils.py (line 189)), _attempt_split (utils/pdf_utils.py (line 226)), and boundary/maths guards (utils/pdf_utils.py (line 247), utils/pdf_utils.py (line 259), utils/pdf_utils.py (line 273), utils/pdf_utils.py (line 289)) so math blocks and long tokens are handled without infinite loops.
+
+No automated tests run (not requested). You might 1) feed representative planner outputs through split_text to confirm chunk sizes/overlaps, and 2) add unit cases covering short text, paragraph pairs, math blocks, and long unbroken strings.
+
+embeddings.py
+import openai
+from typing import List
+
+openai.api_key = "OPENAI_API_KEY" # assume set via environment
+
+EMBED_MODEL = "text-embedding-ada-002"
+
+def get_embedding(text: str) -> List[float]:
+"""
+Obtain the embedding vector for the given text using OpenAI's embedding API.
+"""
+response = openai.Embedding.create(input=[text], model=EMBED_MODEL)
+embedding = response['data'][0]['embedding']
+return embedding
+
+def batch_get_embeddings(texts: List[str]) -> List[List[float]]:
+"""
+Get embeddings for a list of texts in a single API call (if supported).
+"""
+response = openai.Embedding.create(input=texts, model=EMBED_MODEL)
+embeddings = [item['embedding'] for item in response['data']]
+return embeddings
+
+
+Replaced the stubbed OpenAI usage with a client built from OpenAI (lazy singleton) that reads OPENAI_API_KEY from the environment and surfaces a clear error when missing. Both get_embedding and batch_get_embeddings now call client.embeddings.create against text-embedding-3-large and return plain Python lists (utils/embeddings.py). No automated tests were run; if you’d like extra assurance, 1) add unit tests mocking the OpenAI client to confirm batching and error handling, or 2) run a live call with sample text once the key is configured.
+
+vector_store.py
+import os
+from typing import List, Dict
+
+e.g., using Pinecone
+import pinecone
+
+Initialize Pinecone
+API_KEY = os.environ.get("PINECONE_API_KEY")
+ENV = os.environ.get("PINECONE_ENVIRONMENT")
+if API_KEY:
+pinecone.init(api_key=API_KEY, environment=ENV)
+
+index = None
+
+def init_vector_store(index_name: str, embedding_dim: int = 1536):
+"""
+Initialize vector store index (Pinecone index or Chroma collection).
+Creates the index if it doesn't exist.
+"""
+global index
+# For Pinecone
+if index_name not in pinecone.list_indexes():
+pinecone.create_index(name=index_name, dimension=embedding_dim, metric="cosine")
+index = pinecone.Index(index_name)
+
+def index_documents(docs: List[str], metas: List[Dict]):
+"""
+Index a batch of document chunks with metadata.
+"""
+vectors = []
+embeddings = batch_get_embeddings(docs)
+for i, emb in enumerate(embeddings):
+# create an ID and metadata for each
+vec_id = str(i)
+meta = metas[i]
+vectors.append((vec_id, emb, meta))
+index.upsert(vectors=vectors)
+
+def query_vector_store(query_text: str, top_k: int = 5) -> List[Dict]:
+"""
+Query the vector store for the top_k most similar documents to the query text.
+Returns a list of dictionaries with 'text', 'metadata', and 'score'.
+"""
+# Get embedding for query
+query_emb = get_embedding(query_text)
+result = index.query(vector=query_emb, top_k=top_k, include_metadata=True)
+matches = []
+for match in result['matches']:
+entry = {
+"text": match['metadata'].get('text') if match['metadata'] else None,
+"metadata": match['metadata'],
+"score": match.get('score')
+}
+matches.append(entry)
+return matches
+
+
+vector_store.py
+import os
+from typing import List, Dict
+
+e.g., using Pinecone
+import pinecone
+
+Initialize Pinecone
+API_KEY = os.environ.get("PINECONE_API_KEY")
+ENV = os.environ.get("PINECONE_ENVIRONMENT")
+if API_KEY:
+pinecone.init(api_key=API_KEY, environment=ENV)
+
+index = None
+
+def init_vector_store(index_name: str, embedding_dim: int = 1536):
+"""
+Initialize vector store index (Pinecone index or Chroma collection).
+Creates the index if it doesn't exist.
+"""
+global index
+# For Pinecone
+if index_name not in pinecone.list_indexes():
+pinecone.create_index(name=index_name, dimension=embedding_dim, metric="cosine")
+index = pinecone.Index(index_name)
+
+def index_documents(docs: List[str], metas: List[Dict]):
+"""
+Index a batch of document chunks with metadata.
+"""
+vectors = []
+embeddings = batch_get_embeddings(docs)
+for i, emb in enumerate(embeddings):
+# create an ID and metadata for each
+vec_id = str(i)
+meta = metas[i]
+vectors.append((vec_id, emb, meta))
+index.upsert(vectors=vectors)
+
+def query_vector_store(query_text: str, top_k: int = 5) -> List[Dict]:
+"""
+Query the vector store for the top_k most similar documents to the query text.
+Returns a list of dictionaries with 'text', 'metadata', and 'score'.
+"""
+# Get embedding for query
+query_emb = get_embedding(query_text)
+result = index.query(vector=query_emb, top_k=top_k, include_metadata=True)
+matches = []
+for match in result['matches']:
+entry = {
+"text": match['metadata'].get('text') if match['metadata'] else None,
+"metadata": match['metadata'],
+"score": match.get('score')
+}
+matches.append(entry)
+return matches
+
+
+Added lazy Pinecone initialization with cached index reuse and explicit credential validation (utils/vector_store.py (line 1), utils/vector_store.py (line 13)).
+Reworked init_vector_store, index_documents, and query_vector_store to validate inputs, embed texts via our utilities, and normalize metadata/return structure (utils/vector_store.py (line 28), utils/vector_store.py (line 49), utils/vector_store.py (line 75)).
+No automated tests run; consider 1) dry-running index_documents/query_vector_store against a dev Pinecone project, or 2) mocking Pinecone for unit tests to cover error paths.
+
+You are a senior Python engineer. Fix Pinecone integration and refactor the vector store to work with OpenAI text-embedding-3-large (3072-D).
+
+Context & goals
+We use OpenAI embeddings model text-embedding-3-large (dimension 3072).
+Keep the public functions the same:
+init_vector_store(index_name: str, embedding_dim: int = EMBED_DIM) -> Any
+index_documents(docs, metas, *, index_name: str) -> None
+query_vector_store(query_text: str, *, index_name: str, top_k: int = 5) -> List[Dict]
+Remove direct calls to pinecone.* in our code; use a compat layer that works for both Pinecone v2 and v3.
+Normalize query responses across SDK versions.
+Upserts should accept v2-style tuples but convert for v3.
+Update embeddings module first (small edit)
+In utils/embeddings.py define these constants and use them:
+EMBED_MODEL = "text-embedding-3-large"
+EMBED_DIM = 3072
+
+get_embedding / batch_get_embeddings should call OpenAI with EMBED_MODEL.
+1) Create utils/pinecone_compat.py (new file)
+Implement a version-aware compat layer:
+
+Detect v3 by checking for pinecone.Pinecone and pinecone.ServerlessSpec.
+
+Export:
+get_client() -> object
+list_indexes(client) -> List[str]
+ensure_index(client, name: str, dim: int, metric: str = "cosine") -> object # returns index handle
+upsert(index, vectors: List[Tuple[str, List[float], Dict]]) -> None # converts tuples to dicts for v3
+query(index, vector: List[float], top_k: int, include_metadata: bool, include_values: bool) -> Dict
+# returns normalized: {"matches": [{"id": str, "score": float, "metadata": dict}]}
+
+v3 create_index must use ServerlessSpec(cloud=os.getenv("PINECONE_CLOUD","aws"), region=os.getenv("PINECONE_REGION","us-east-1")).
+
+v2 must call pinecone.init(api_key=..., environment=...).
+
+Edge cases:
+
+Missing env vars → raise clear RuntimeError indicating which key is missing.
+Response objects may be pydantic models (attrs) or dicts; support both.
+v3 upsert expects [{"id","values","metadata"}]; v2 accepts tuples.
+2) Refactor utils/vector_store.py to use compat
+Do NOT import pinecone directly here.
+Import:
+from utils.embeddings import batch_get_embeddings, get_embedding, EMBED_DIM
+from utils.pinecone_compat import get_client, ensure_index, upsert as pc_upsert, query as pc_query
+Maintain a cached client and index handle by name.
+Default embedding_dim to EMBED_DIM (3072).
+Build vectors as tuples: (id: str, values: List[float], metadata: Dict) where metadata includes original "text".
+IMPORTANT: generate stable IDs across batches if possible (e.g., prefix with an incrementing counter or pass in from caller); for now, keep simple str(i) but note TODO.
+Implementation skeleton:
+
+utils/vector_store.py
+from future import annotations
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+from utils.embeddings import batch_get_embeddings, get_embedding, EMBED_DIM
+from utils.pinecone_compat import get_client, ensure_index, upsert as pc_upsert, query as pc_query
+
+_client: Any = None
+_cached_index_name: Optional[str] = None
+_cached_index_handle: Any = None
+
+def init_vector_store(index_name: str, embedding_dim: int = EMBED_DIM) -> Any:
+"""
+Ensure Pinecone index exists (v2/v3) and cache the handle for reuse.
+Embedding dim defaults to OpenAI text-embedding-3-large (3072).
+"""
+global _client, _cached_index_name, _cached_index_handle
+if _cached_index_handle is not None and _cached_index_name == index_name:
+return _cached_index_handle
+_client = _client or get_client()
+_cached_index_handle = ensure_index(_client, index_name, dim=embedding_dim, metric="cosine")
+_cached_index_name = index_name
+return _cached_index_handle
+
+def index_documents(
+docs: Sequence[str],
+metas: Sequence[Optional[Dict]],
+*,
+index_name: str,
+) -> None:
+if len(docs) != len(metas):
+raise ValueError("docs and metas must have identical lengths.")
+if not docs:
+return
+index = init_vector_store(index_name)
+embeddings = batch_get_embeddings(list(docs))
+vectors: List[Tuple[str, List[float], Dict]] = []
+for i, (emb, doc, meta) in enumerate(zip(embeddings, docs, metas)):
+md = dict(meta or {})
+md.setdefault("text", doc)
+vectors.append((str(i), emb, md))
+pc_upsert(index, vectors)
+
+def query_vector_store(
+query_text: str,
+*,
+index_name: str,
+top_k: int = 5,
+) -> List[Dict]:
+if not query_text:
+return []
+index = init_vector_store(index_name)
+qv = get_embedding(query_text)
+res = pc_query(index, qv, top_k=top_k, include_metadata=True, include_values=False)
+out: List[Dict] = []
+for m in res.get("matches", []):
+md = m.get("metadata") or {}
+out.append({
+"id": m.get("id"),
+"text": md.get("text"),
+"metadata": md,
+"score": m.get("score"),
+})
+return out
+
+3) Implement utils/pinecone_compat.py now
+Write full code that:
+
+Imports pinecone.
+Detects v3 via hasattr(pinecone, "Pinecone"); captures ServerlessSpec if present.
+get_client():
+v3: return pinecone.Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+v2: pinecone.init(api_key=os.environ["PINECONE_API_KEY"], environment=os.environ["PINECONE_ENVIRONMENT"]); return pinecone
+list_indexes(client): v3 -> [ix.name for ix in client.list_indexes()], v2 -> list(client.list_indexes())
+ensure_index(...):
+if name not in list_indexes(client): create accordingly (v3 uses ServerlessSpec, v2 uses create_index(name=name, dimension=dim, metric=metric))
+return client.Index(name)
+upsert(index, vectors): v3 -> [{"id": vid, "values": vals, "metadata": meta}]; v2 -> vectors as-is
+query(index,...): call index.query(...); unify to {"matches":[{"id","score","metadata"}]}
+4) Housekeeping
+Remove any remaining direct import pinecone in vector_store.py to silence Pylance missing attributes.
+Ensure type annotations don’t reference pinecone.Index; use Any.
+Keep current public function signatures unchanged for upstream code.
+5) Quick smoke test (optional)
+Create a tiny script to:
+init_vector_store("dev-index")
+index_documents(["hello world", "goodbye moon"], [{"book":"A","page":1},{"book":"B","page":2}], index_name="dev-index")
+print(query_vector_store("hello", index_name="dev-index", top_k=2))
+Acceptance
+No Pylance errors for pinecone.* symbols in vector_store.py.
+Works on both Pinecone v2 and v3 SDKs.
+Index creation uses dimension 3072 by default.
+Query returns normalized matches with metadata["text"] present.
+
+You are a senior Python engineer. Fix Pinecone integration and refactor the vector store to work with OpenAI text-embedding-3-large (3072-D).
+
+Context & goals
+We use OpenAI embeddings model text-embedding-3-large (dimension 3072).
+Keep the public functions the same:
+init_vector_store(index_name: str, embedding_dim: int = EMBED_DIM) -> Any
+index_documents(docs, metas, *, index_name: str) -> None
+query_vector_store(query_text: str, *, index_name: str, top_k: int = 5) -> List[Dict]
+Remove direct calls to pinecone.* in our code; use a compat layer that works for both Pinecone v2 and v3.
+Normalize query responses across SDK versions.
+Upserts should accept v2-style tuples but convert for v3.
+Update embeddings module first (small edit)
+In utils/embeddings.py define these constants and use them:
+EMBED_MODEL = "text-embedding-3-large"
+EMBED_DIM = 3072
+
+get_embedding / batch_get_embeddings should call OpenAI with EMBED_MODEL.
+1) Create utils/pinecone_compat.py (new file)
+Implement a version-aware compat layer:
+
+Detect v3 by checking for pinecone.Pinecone and pinecone.ServerlessSpec.
+
+Export:
+get_client() -> object
+list_indexes(client) -> List[str]
+ensure_index(client, name: str, dim: int, metric: str = "cosine") -> object # returns index handle
+upsert(index, vectors: List[Tuple[str, List[float], Dict]]) -> None # converts tuples to dicts for v3
+query(index, vector: List[float], top_k: int, include_metadata: bool, include_values: bool) -> Dict
+# returns normalized: {"matches": [{"id": str, "score": float, "metadata": dict}]}
+
+v3 create_index must use ServerlessSpec(cloud=os.getenv("PINECONE_CLOUD","aws"), region=os.getenv("PINECONE_REGION","us-east-1")).
+
+v2 must call pinecone.init(api_key=..., environment=...).
+
+Edge cases:
+
+Missing env vars → raise clear RuntimeError indicating which key is missing.
+Response objects may be pydantic models (attrs) or dicts; support both.
+v3 upsert expects [{"id","values","metadata"}]; v2 accepts tuples.
+2) Refactor utils/vector_store.py to use compat
+Do NOT import pinecone directly here.
+Import:
+from utils.embeddings import batch_get_embeddings, get_embedding, EMBED_DIM
+from utils.pinecone_compat import get_client, ensure_index, upsert as pc_upsert, query as pc_query
+Maintain a cached client and index handle by name.
+Default embedding_dim to EMBED_DIM (3072).
+Build vectors as tuples: (id: str, values: List[float], metadata: Dict) where metadata includes original "text".
+IMPORTANT: generate stable IDs across batches if possible (e.g., prefix with an incrementing counter or pass in from caller); for now, keep simple str(i) but note TODO.
+Implementation skeleton:
+
+utils/vector_store.py
+from future import annotations
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+from utils.embeddings import batch_get_embeddings, get_embedding, EMBED_DIM
+from utils.pinecone_compat import get_client, ensure_index, upsert as pc_upsert, query as pc_query
+
+_client: Any = None
+_cached_index_name: Optional[str] = None
+_cached_index_handle: Any = None
+
+def init_vector_store(index_name: str, embedding_dim: int = EMBED_DIM) -> Any:
+"""
+Ensure Pinecone index exists (v2/v3) and cache the handle for reuse.
+Embedding dim defaults to OpenAI text-embedding-3-large (3072).
+"""
+global _client, _cached_index_name, _cached_index_handle
+if _cached_index_handle is not None and _cached_index_name == index_name:
+return _cached_index_handle
+_client = _client or get_client()
+_cached_index_handle = ensure_index(_client, index_name, dim=embedding_dim, metric="cosine")
+_cached_index_name = index_name
+return _cached_index_handle
+
+def index_documents(
+docs: Sequence[str],
+metas: Sequence[Optional[Dict]],
+*,
+index_name: str,
+) -> None:
+if len(docs) != len(metas):
+raise ValueError("docs and metas must have identical lengths.")
+if not docs:
+return
+index = init_vector_store(index_name)
+embeddings = batch_get_embeddings(list(docs))
+vectors: List[Tuple[str, List[float], Dict]] = []
+for i, (emb, doc, meta) in enumerate(zip(embeddings, docs, metas)):
+md = dict(meta or {})
+md.setdefault("text", doc)
+vectors.append((str(i), emb, md))
+pc_upsert(index, vectors)
+
+def query_vector_store(
+query_text: str,
+*,
+index_name: str,
+top_k: int = 5,
+) -> List[Dict]:
+if not query_text:
+return []
+index = init_vector_store(index_name)
+qv = get_embedding(query_text)
+res = pc_query(index, qv, top_k=top_k, include_metadata=True, include_values=False)
+out: List[Dict] = []
+for m in res.get("matches", []):
+md = m.get("metadata") or {}
+out.append({
+"id": m.get("id"),
+"text": md.get("text"),
+"metadata": md,
+"score": m.get("score"),
+})
+return out
+
+3) Implement utils/pinecone_compat.py now
+Write full code that:
+
+Imports pinecone.
+Detects v3 via hasattr(pinecone, "Pinecone"); captures ServerlessSpec if present.
+get_client():
+v3: return pinecone.Pinecone(api_key=os.environ["PINECONE_API_KEY"])
+v2: pinecone.init(api_key=os.environ["PINECONE_API_KEY"], environment=os.environ["PINECONE_ENVIRONMENT"]); return pinecone
+list_indexes(client): v3 -> [ix.name for ix in client.list_indexes()], v2 -> list(client.list_indexes())
+ensure_index(...):
+if name not in list_indexes(client): create accordingly (v3 uses ServerlessSpec, v2 uses create_index(name=name, dimension=dim, metric=metric))
+return client.Index(name)
+upsert(index, vectors): v3 -> [{"id": vid, "values": vals, "metadata": meta}]; v2 -> vectors as-is
+query(index,...): call index.query(...); unify to {"matches":[{"id","score","metadata"}]}
+4) Housekeeping
+Remove any remaining direct import pinecone in vector_store.py to silence Pylance missing attributes.
+Ensure type annotations don’t reference pinecone.Index; use Any.
+Keep current public function signatures unchanged for upstream code.
+5) Quick smoke test (optional)
+Create a tiny script to:
+init_vector_store("dev-index")
+index_documents(["hello world", "goodbye moon"], [{"book":"A","page":1},{"book":"B","page":2}], index_name="dev-index")
+print(query_vector_store("hello", index_name="dev-index", top_k=2))
+Acceptance
+No Pylance errors for pinecone.* symbols in vector_store.py.
+Works on both Pinecone v2 and v3 SDKs.
+Index creation uses dimension 3072 by default.
+Query returns normalized matches with metadata["text"] present.
+
+Updated embeddings to lock onto the 3072‑D OpenAI text-embedding-3-large model via shared constants for downstream callers (utils/embeddings.py (line 6)). Added a pinecone_compat layer that detects SDK v2 vs v3, normalizes env requirements, index creation, upserts, and query responses for mixed object/dict payloads (utils/pinecone_compat.py (line 1)). Refactored the vector store to rely on that compat API, cache client/index handles, default to EMBED_DIM, and feed normalized vectors with embedded original text (utils/vector_store.py (line 1)). No automated tests run; consider a quick smoke script to exercise init_vector_store, index_documents, and query_vector_store against a dev Pinecone project.
+
